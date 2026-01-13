@@ -216,13 +216,11 @@ You have a chaotic creative team, missed deadlines, and scope creep on every pro
 # ============================================
 
 def get_api_key():
-    """Get Anthropic API key."""
+    """Get Anthropic API key from secrets only."""
     try:
-        if "anthropic" in st.secrets:
-            return st.secrets["anthropic"]
+        return st.secrets["anthropic"]
     except:
-        pass
-    return st.session_state.get("api_anthropic", "")
+        return None
 
 
 def build_persona_system_prompt(persona, knowledge_text=""):
@@ -349,18 +347,12 @@ Be specific and actionable. Reference actual things said in the conversation."""
 
 
 # ============================================
-# SIDEBAR
+# SIDEBAR - NO API KEY INPUT
 # ============================================
 
 with st.sidebar:
     st.markdown("## ⚙️ Settings")
     
-    st.markdown("### 🔑 API Key")
-    st.text_input("Anthropic API Key", type="password", key="api_anthropic")
-    
-    st.markdown("---")
-    
-    # Knowledge Base
     st.markdown("### 📚 SWAY Knowledge")
     st.caption("Upload SWAY guide for context")
     
@@ -416,10 +408,10 @@ if "knowledge_text" not in st.session_state:
 
 st.markdown('<div class="trainer-header"><h1>🎭 SWAY Focus Group Simulator</h1><p>Practice Your Pitch with AI Personas</p></div>', unsafe_allow_html=True)
 
-# Check API key
+# Check API key from secrets
 api_key = get_api_key()
 if not api_key:
-    st.warning("⚠️ Please enter your Anthropic API key in the sidebar.")
+    st.error("⚠️ Configuration error. Please contact administrator.")
     st.stop()
 
 # ============================================
